@@ -6,6 +6,14 @@ async function main() {
 
     try {
         await client.connect() //connect to mongodb cluster
+
+        await createListing(client,{
+            name: 'Lovely Software Program',
+            summary: 'Once upon some lines of code',
+            bedrooms: 1,
+            bathrooms: 1
+        })
+
     } catch (e) {
         console.log(e)
     } finally {
@@ -15,6 +23,12 @@ async function main() {
 
 main().catch(console.error)
 
+async function createListing(client, newListing) {
+    const result = await client.db('sample_airbnb')
+        .collection('listingsAndReviews')
+        .insertOne(newListing)
+    console.log(`New listing created with the  following id: ${result.insertedId}`)
+}
 
 
 
