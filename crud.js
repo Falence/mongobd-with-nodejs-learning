@@ -7,37 +7,7 @@ async function main() {
     try {
         await client.connect() //connect to mongodb cluster
 
-        await createListing(client,{
-            name: 'Lovely Software Program',
-            summary: 'Once upon some lines of code',
-            bedrooms: 1,
-            bathrooms: 1
-        })
-
-        await createMultipleListings(client,[
-            {
-                name: "Infinite Views",
-                summary: "Modern home with infinite views from the infinity pool",
-                property_type: "House",
-                bedrooms: 5,
-                bathrooms: 4.5,
-                beds: 5
-            },
-            {
-                name: "Private room in London",
-                property_type: "Apartment",
-                bedrooms: 1,
-                bathroom: 1
-            },
-            {
-                name: "Beautiful Beach House",
-                summary: "Enjoy relaxed beach living in this house with a private beach",
-                bedrooms: 4,
-                bathrooms: 2.5,
-                beds: 7,
-                last_review: new Date()
-            }
-        ])
+        await readOneListingByName(client, 'Lovely Software Program')
 
     } catch (e) {
         console.log(e)
@@ -48,6 +18,7 @@ async function main() {
 
 main().catch(console.error)
 
+// insert a listing
 async function createListing(client, newListing) {
     const result = await client.db('sample_airbnb')
         .collection('listingsAndReviews')
@@ -55,6 +26,7 @@ async function createListing(client, newListing) {
     console.log(`New listing created with the  following id: ${result.insertedId}`)
 }
 
+// insert multiple listings
 async function createMultipleListings(client, newListings) {
     const result = await client.db('sample_airbnb')
         .collection('listingsAndReviews')
@@ -63,6 +35,18 @@ async function createMultipleListings(client, newListings) {
     console.log(result.insertedIds)
 }
 
+// read one listing by name
+async function readOneListingByName(client, nameOfListing) {
+    const result = await client.db('sample_airbnb')
+        .collection('listingsAndReviews')
+        .findOne({name: nameOfListing})
+    if (result) {
+        console.log(`Found a listing in the collection with the name ${nameOfListing}: `)
+        console.log(result)
+    } else {
+        console.log(`No listings found with the name ${nameOfListing}`)
+    }
+}
 
 
 
